@@ -78,10 +78,11 @@ namespace ShipsHaveInsides.MapComponents
 
                 foreach (var plantGrower in plants)
                 {
+
                     //do some calc to decide the amount?
                     gasCalc.GasExchange(
                         rg: plantGrower.GetRoomGroup(),
-                        removed: new GasVolume(new GasMixture(0f, 0f, 2f * plantGrower.PlantsOnMe.Count()), 0.3f),
+                        //removed: new GasVolume(new GasMixture(0f, 0f, 2f * plantGrower.PlantsOnMe.Count()), 0.3f),
                         added: new GasVolume(new GasMixture(0f, 2f * plantGrower.PlantsOnMe.Count(), 0f), 0.3f)
                         );
                 }

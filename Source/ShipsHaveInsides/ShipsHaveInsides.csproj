@@ -83,7 +83,7 @@
     <Compile Include="Mod\FindLaunchFailReasons.cs" />
     <Compile Include="Mod\HandleWorldSelectorOverrides.cs" />
     <Compile Include="Mod\InitShipRefs.cs" />
-    <Compile Include="Mod\NoSpaceWeather.cs" />
+    <Compile Include="Mod\Patches.cs" />
     <Compile Include="Mod\RecoverPawnAfterExit.cs" />
     <Compile Include="Mod\SaveShip.cs" />
     <Compile Include="Mod\ShipInteriorMod.cs" />
@@ -103,6 +103,8 @@
     <Compile Include="RoomStatWorkers\RoomStatWorker_CO2.cs" />
     <Compile Include="RoomStatWorkers\RoomStatWorker_Oxygen.cs" />
     <Compile Include="ScenPart_LandShip.cs" />
+    <Compile Include="Space\AtmosphereAssistant.cs" />
+    <Compile Include="Space\SpaceConstants.cs" />
     <Compile Include="ThoughtWorker_SpaceThoughts.cs" />
     <Compile Include="Utilities\IDictionary.cs" />
     <Compile Include="Utilities\MapExtensions.cs" />

@@ -9,6 +9,88 @@ using Verse;
 
 namespace ShipsHaveInsides.Mod
 {
+
+
+    [HarmonyPatch(typeof(IncidentWorker_TraderCaravanArrival), "CanFireNowSub")]
+    public static class IncidentWorker_TraderCaravanArrival_CanFireNowSub
+    {
+        [HarmonyPostfix]
+        public static void CanSpawnTrader(IncidentParms parms, ref bool __result)
+        {
+            TerrainDef def = TerrainDef.Named("HardVacuum");
+
+            Map map = (Map)parms.target;
+
+            ShipInteriorMod.Log("Trader trying to spawn?");
+
+            if (map.IsSpace())
+            {
+                __result = true;
+                //return false;
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(IncidentWorker_Infestation), "CanFireNowSub")]
+    public static class IncidentWorker_Infestation_CanFireNowSub
+    {
+        [HarmonyPostfix]
+        public static void CanInfestation(IncidentParms parms, ref bool __result)
+        {
+            TerrainDef def = TerrainDef.Named("HardVacuum");
+
+            Map map = (Map)parms.target;
+
+            if (map.IsSpace())
+            {
+                __result = true;
+                //return false;
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(GameConditionManager), "RegisterCondition")]
+    public static class GameConditionManager_RegisterCondition_CanFireNowSub
+    {
+        [HarmonyPostfix]
+        public static void CanRegisterCondition(ref GameCondition cond)
+        {
+            foreach(Map map in cond.AffectedMaps)
+            {
+                if(map.IsSpace())
+                {
+                    cond.AffectedMaps.Remove(map);
+                }
+            }
+
+        }
+    }
+
+    [HarmonyPatch(typeof(WildAnimalSpawner), "SpawnRandomWildAnimalAt")]
+    public static class WildAnimalSpawner_SpawnRandomWildAnimalAt
+    {
+
+        public static FieldInfo mapField = typeof(WildAnimalSpawner).GetField("map", BindingFlags.Instance | BindingFlags.NonPublic);
+        public static Func<WildAnimalSpawner, Map> getMap = wd => mapField.GetValue(wd) as Map;
+
+        [HarmonyPrefix]
+        public static bool CanPawnKindAllowed(IntVec3 loc, ref WildAnimalSpawner __instance, ref bool __result)
+        {
+            //        public static FieldInfo mapField = typeof(WeatherDecider).GetField("map", BindingFlags.Instance | BindingFlags.NonPublic);
+
+            Map map = getMap(__instance);
+
+            if (map.IsSpace())
+            {
+                __result = false;
+                return false;
+            }
+
+            return true;
+        }
+    }
+
+
     [HarmonyPatch(typeof(WeatherDecider), "StartInitialWeather", null)]
     public static class WeatherDecider_StartInitialWeather
     {

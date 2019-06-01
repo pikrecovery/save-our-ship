@@ -10,6 +10,8 @@ namespace RimWorld
         private static readonly Vector2 BarSize = new Vector2(0.3f, 0.07f);
         private static readonly Material PowerPlantSolarBarFilledMat = SolidColorMaterials.SimpleSolidColorMaterial(new Color(0.5f, 0.475f, 0.1f), false);
         private static readonly Material PowerPlantSolarBarUnfilledMat = SolidColorMaterials.SimpleSolidColorMaterial(new Color(0.15f, 0.15f, 0.15f), false);
+        private const float SunFullPowerValue = 1.0F;
+
         private static float FullSunPower
         {
             get { return ShipsHaveInsides.Mod.ShipInteriorMod.instance.shipSolarPanelOutput.Value; }
@@ -20,7 +22,16 @@ namespace RimWorld
         {
             get
             {
+                bool isSpace = this.parent.Map.IsSpace();
+
                 float desire = Mathf.Lerp(NightPower, FullSunPower, this.parent.Map.skyManager.CurSkyGlow) * this.RoofedPowerOutputFactor;
+
+                if (isSpace)
+                {
+
+                    desire = Mathf.Lerp(NightPower, FullSunPower, SunFullPowerValue) * this.RoofedPowerOutputFactor;
+                }
+
                 IntVec3 intVec3_2 = this.parent.Position + IntVec3.South.RotatedBy(this.parent.Rotation);
                 IntVec3 intVec3_3 = this.parent.Position + (IntVec3.South.RotatedBy(this.parent.Rotation) * 2);
                 IntVec3 intVec3_4 = this.parent.Position + (IntVec3.South.RotatedBy(this.parent.Rotation) * 3);
@@ -31,7 +42,7 @@ namespace RimWorld
                 }
 
                 UnfoldComponent comp = this.parent.GetComp<UnfoldComponent>();
-                if(comp != null)
+                if (comp != null)
                 {
                     if (Mathf.Approximately(desire, 0.0f))
                     {
