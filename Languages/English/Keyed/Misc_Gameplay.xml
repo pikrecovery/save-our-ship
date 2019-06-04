@@ -17,4 +17,6 @@
 	<ShipInsideRenameDesc>Rename the ship. I hear that's good luck.</ShipInsideRenameDesc>
 	<ShipInsideShortJump>Short Range Jump</ShipInsideShortJump>
 	<ShipInsideShortJumpDesc>Jump to a new orbit location. Make sure everyone is inside!</ShipInsideShortJumpDesc>
-</LanguageData>
+	<ShipInsideRePressurize>RePressurize</ShipInsideRePressurize>
+	<ShipInsideRePressurizeDesc>RePressurize this ship to jumpstart life support.</ShipInsideRePressurizeDesc>
+	</LanguageData>

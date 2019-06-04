@@ -61,12 +61,12 @@ namespace ShipsHaveInsides.MapComponents
                 gasCalc.Equalize(roomGroupsWithVents);
 
                 var breathingPawns = map.mapPawns.
-                    PawnsInFaction(Faction.OfPlayer).Where(p => p.def.race.FleshType == FleshTypeDefOf.Normal)
+                    PawnsInFaction(Faction.OfPlayer).Where(p => p.def.race.FleshType == FleshTypeDefOf.Normal && !p.Dead)
                     .Select(x => new Pair<Pawn, RoomGroup>(x, x.GetRoomGroup()));
 
                 foreach(var pawn in breathingPawns)
                 {
-                    //do some calc to decide the amount?
+
                     gasCalc.GasExchange(
                         rg: pawn.Second, 
                         removed: new GasVolume(new GasMixture(0f, 20f, 0f), 0.3f), 
@@ -78,11 +78,10 @@ namespace ShipsHaveInsides.MapComponents
 
                 foreach (var plantGrower in plants)
                 {
-
                     //do some calc to decide the amount?
                     gasCalc.GasExchange(
                         rg: plantGrower.GetRoomGroup(),
-                        //removed: new GasVolume(new GasMixture(0f, 0f, 2f * plantGrower.PlantsOnMe.Count()), 0.3f),
+                        removed: new GasVolume(new GasMixture(0f, 0f, 2f * plantGrower.PlantsOnMe.Count()), 0.3f),
                         added: new GasVolume(new GasMixture(0f, 2f * plantGrower.PlantsOnMe.Count(), 0f), 0.3f)
                         );
                 }
