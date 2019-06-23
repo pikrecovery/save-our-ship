@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using RimWorld.Planet;
 using ShipsHaveInsides.MapComponents;
+using ShipsHaveInsides.Mod;
 using UnityEngine;
 using Verse;
 
@@ -20,7 +21,68 @@ namespace RimWorld
         private const float drawHeight = 50f;
         private static readonly Material WorldLineMatWhite = MaterialPool.MatFrom(GenDraw.LineTexPath, ShaderDatabase.WorldOverlayTransparent, Color.white, WorldMaterials.WorldLineRenderQueue);
 
-        public ShipDefinition ShipDefinition { get; set; }
+        private Guid? shipGuid = null;
+
+        private ShipDefinition ShipDefinitionObject = null;
+        public ShipDefinition ShipDefinition { get => ShipDefinitionObject; set => ShipDefinitionObject = value; }
+        public override void ExposeData()
+        {
+            base.ExposeData();
+
+            //TODO: pretty sure scribe uses a key value database, generify this
+            Scribe_Values.Look(ref curPos, "curPos");
+
+            string guid = null;
+
+            Scribe_Values.Look(ref guid, "shipGuid");//TODO: for multiple ships i think we will need to use an incremental identifier
+
+            if(guid != null)
+            {
+                //Guid val = Guid.
+                shipGuid = new Guid(guid);
+            }
+
+            /*Scribe_Deep.Look(ref ShipDefinitionObject, "shipDefinitionObject");
+
+           if(ShipDefinitionObject != null)
+            {
+                ShipDefinition = ShipDefinitionObject;
+            }*/
+        }
+
+        public override void FinalizeLoading()
+        {
+            base.FinalizeLoading();
+            if (shipGuid == null)
+            {
+                ShipDefinition[] shipDefinitions = Map.GetSpaceAtmosphereMapComponent().GetShipDefinitions().ToArray();
+
+                ShipDefinition def = shipDefinitions[0];
+
+                if (def.shipIdentifier == null)
+                {
+                    def.computeGUID();
+                }
+
+                shipGuid = def.shipIdentifier;
+
+                ShipDefinition searchDef = Map.GetSpaceAtmosphereMapComponent().getDefinitionByIdentifier((Guid)shipGuid);
+
+                if (searchDef != null)
+                {
+                    ShipDefinition = searchDef;
+                }
+            } else
+            {
+                ShipDefinition searchDef = Map.GetSpaceAtmosphereMapComponent().getDefinitionByIdentifier((Guid)shipGuid);
+
+                if (searchDef != null)
+                {
+                    ShipDefinition = searchDef;
+                }
+            }
+        }
+
 
         public override Material Material
         {
@@ -93,11 +155,16 @@ namespace RimWorld
 
         internal void ClickedNewTile(int tileClicked)
         {
-            gotoMote.OrderedToTile(tileClicked);
+            //gotoMote.OrderedToTile(tileClicked);//TODO: this properly
+
             targetTile = tileClicked;
             ShipDefinition.Tile = targetTile;
+
+            Vector3 tileCenter = Find.WorldGrid.GetTileCenter(targetTile.Value);
+
+            curPos = tileCenter + (tileCenter.normalized * drawHeight);
         }
 
-        public override string Label => ShipDefinition?.Name ?? "Unamed ship";
+        public override string Label => ShipDefinition?.Name ?? "Untitled ship";
     }
 }

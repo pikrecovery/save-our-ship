@@ -104,6 +104,7 @@
     <Compile Include="RoomStatWorkers\RoomStatWorker_Oxygen.cs" />
     <Compile Include="ScenPart_LandShip.cs" />
     <Compile Include="Space\AtmosphereAssistant.cs" />
+    <Compile Include="Space\ShipManager.cs" />
     <Compile Include="Space\SpaceConstants.cs" />
     <Compile Include="ThoughtWorker_SpaceThoughts.cs" />
     <Compile Include="Utilities\IDictionary.cs" />

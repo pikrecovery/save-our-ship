@@ -1,4 +1,5 @@
 ﻿using RimWorld;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,6 +15,25 @@ namespace ShipsHaveInsides.MapComponents
         public SpaceAtmosphereMapComponent(Map map) : base(map)
         {
         }
+
+        public List<ShipDefinition> GetShipDefinitions()
+        {
+            return shipDefinitions;
+        }
+
+        public ShipDefinition getDefinitionByIdentifier(Guid identifer)
+        {
+            foreach (var def in shipDefinitions)
+            {
+                if(def.shipIdentifier != null && def.shipIdentifier.Equals(identifer))
+                {
+                    return def;
+                }
+            }
+
+            return null;
+        }
+
 
         public override void ExposeData()
         {

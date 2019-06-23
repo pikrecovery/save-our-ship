@@ -32,6 +32,7 @@ namespace ShipsHaveInsides.MapComponents
             else if (t.def.building?.shipPart == true)
             {
                 var newShip = new ShipDefinition();
+                newShip.computeGUID();
                 newShip.name = name;
                 newShip.AddToShip(t);
                 shipDefinitions.Add(newShip);
@@ -39,6 +40,26 @@ namespace ShipsHaveInsides.MapComponents
         }
 
         private string name = null;
+
+        public String GetName()
+        {
+            return name;
+        }
+
+        public Guid? shipIdentifier = null;
+
+        public void computeGUID()
+        {
+            if(shipIdentifier == null)
+            {
+                shipIdentifier = Guid.NewGuid();
+            }
+        }
+
+        public Guid computeAndReturnGuid()
+        {
+             return Guid.NewGuid();
+        }
 
         private List<WeakReference> thingsInShip = new List<WeakReference>();
         private Dictionary<IntVec3, GasMixture> positionsInShip = new Dictionary<IntVec3, GasMixture>();
@@ -76,7 +97,7 @@ namespace ShipsHaveInsides.MapComponents
 
         public IEnumerable<Thing> Things => thingsInShip.Select(t => (Thing)t.Target).Where(t => t != null);
 
-        public string Name { get => name ?? "Unnamed Ship"; set => name = value; }
+        public string Name { get => name; set => name = value; }
 
         public bool ShouldAddToShip(Thing t)
         {
@@ -180,6 +201,7 @@ namespace ShipsHaveInsides.MapComponents
             return new ShipDefinition()
             {
                 name = newName,
+                shipIdentifier = this.computeAndReturnGuid(),
                 thingsInShip = thingsInShip.Concat(otherShip.thingsInShip).ToList(),
                 positionsInShip = positionsInShip.Concat(otherShip.positionsInShip).ToDictionary(x => x.Key, x => x.Value)
             };
@@ -197,6 +219,31 @@ namespace ShipsHaveInsides.MapComponents
                    .ToList();
             }
             Scribe_Values.Look(ref name, "name");
+
+
+            if(shipIdentifier != null)
+            {
+                string idString = shipIdentifier.ToString();
+                Scribe_Values.Look(ref idString, "shipIdentifier");
+
+                shipIdentifier = new Guid(idString);
+            } else
+            {
+                string idString = null;
+
+                Scribe_Values.Look(ref idString, "shipIdentifier");
+
+                if (idString != null)
+                {
+                    //Guid val = Guid.
+                    shipIdentifier = new Guid(idString);
+                }
+            }
+
+
+
+
+
             Scribe_Collections.Look(ref list, "things", LookMode.Deep);
             Scribe_Collections.Look(ref positionsInShip, "positionsInShip");
 
@@ -218,6 +265,7 @@ namespace ShipsHaveInsides.MapComponents
                 {
                     positionsInShip = new Dictionary<IntVec3, GasMixture>();
                 }
+
             }
         }
 
